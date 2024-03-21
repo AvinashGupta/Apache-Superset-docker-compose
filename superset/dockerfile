@@ -1,0 +1,18 @@
+# Note: versions >3.1.0 don't allow drill down inside iframe
+FROM --platform=linux/amd64 apache/superset:3.1.0
+
+USER root
+
+ENV ADMIN_USERNAME $ADMIN_USERNAME
+ENV ADMIN_EMAIL $ADMIN_EMAIL
+ENV ADMIN_PASSWORD $ADMIN_PASSWORD
+ENV SUPERSET_SECRET_KEY $SUPERSET_SECRET_KEY
+ENV GUEST_TOKEN_JWT_SECRET $GUEST_TOKEN_JWT_SECRET
+ENV GUEST_TOKEN_JWT_AUDIENCE $GUEST_TOKEN_JWT_AUDIENCE
+
+COPY --chown=superset:superset --chmod=755 ./superset-init.sh /superset-init.sh
+COPY superset_config.py /app/
+ENV SUPERSET_CONFIG_PATH /app/superset_config.py
+
+USER superset
+ENTRYPOINT [ "/superset-init.sh" ]

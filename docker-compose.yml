@@ -1,0 +1,58 @@
+x-superset-user: &superset-user root
+x-superset-depends-on: &superset-depends-on
+  - db
+  - redis
+x-superset-volumes: &superset-volumes
+  - superset_home:/app/superset_home
+
+version: "3.7"
+services:
+  redis:
+    image: redis:7
+    container_name: superset_cache
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis:/data
+
+  db:
+    env_file: superset/.env-dev
+    image: postgres:14
+    container_name: superset_db
+    restart: unless-stopped
+    expose:
+      - 5433
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - db_home:/var/lib/postgresql/data
+
+  superset:
+    env_file: superset/.env-dev
+    build:
+        context: ./superset
+        dockerfile: dockerfile
+    container_name: superset_app
+    restart: unless-stopped
+    ports:
+      - 8088:8088
+    user: *superset-user
+    depends_on: *superset-depends-on
+    volumes: *superset-volumes
+    environment:
+      CYPRESS_CONFIG: "${CYPRESS_CONFIG}"
+      SUPERSET_SECRET_KEY: "${SUPERSET_SECRET_KEY}"
+      GUEST_TOKEN_JWT_SECRET: "${GUEST_TOKEN_JWT_SECRET}"
+      GUEST_TOKEN_JWT_AUDIENCE: "${GUEST_TOKEN_JWT_AUDIENCE}"
+      ADMIN_USERNAME: "${ADMIN_USERNAME}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+
+volumes:
+  superset_home:
+    external: false
+  db_home:
+    external: false
+  redis:
+    external: false
