@@ -1,5 +1,19 @@
 #!/bin/bash
 
+echo_step() {
+cat <<EOF
+
+######################################################################
+
+
+Init Step ${1}/${STEP_CNT} [${2}] -- ${3}
+
+
+######################################################################
+
+EOF
+}
+
 # Upgrading Superset metastore
 echo_step "1" "Starting" "Applying DB migrations"
 superset db upgrade
