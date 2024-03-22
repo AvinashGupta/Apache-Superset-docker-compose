@@ -27,6 +27,7 @@ services:
       - "127.0.0.1:5433:5432"
     volumes:
       - db_home:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   superset:
     env_file: superset/.env-dev
