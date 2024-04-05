@@ -31,7 +31,7 @@ services:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
   
   clickhouse:
-    image: yandex/clickhouse-server
+    image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
     restart: unless-stopped
     ports:
