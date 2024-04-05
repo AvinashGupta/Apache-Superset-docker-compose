@@ -15,7 +15,7 @@ COPY superset_config.py /app/
 COPY requirements-local.txt /app/
 ENV SUPERSET_CONFIG_PATH /app/superset_config.py
 
-RUN pip install -r /app/requirements.txt -r /app/requirements-local.txt
+RUN pip install -r /app/requirements-local.txt
 
 USER superset
 ENTRYPOINT [ "/superset-init.sh" ]
