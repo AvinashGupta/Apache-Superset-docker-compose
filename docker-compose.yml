@@ -2,6 +2,7 @@ x-superset-user: &superset-user root
 x-superset-depends-on: &superset-depends-on
   - db
   - redis
+  - clickhouse
 x-superset-volumes: &superset-volumes
   - superset_home:/app/superset_home
 
@@ -28,6 +29,15 @@ services:
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+  
+  clickhouse:
+    image: yandex/clickhouse-server
+    container_name: clickhouse
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
+    volumes: 
+      - clickhouse_data:/var/lib/clickhouse
 
   superset:
     env_file: superset/.env-dev
@@ -56,4 +66,6 @@ volumes:
   db_home:
     external: false
   redis:
+    external: false
+  clickhouse_data: 
     external: false
