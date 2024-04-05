@@ -23,10 +23,18 @@ This project provides a Docker Compose configuration for Apache Superset along w
 $ source .env
 ```
 
+Create base64 secrets
+```bash
+$ echo $(openssl rand -base64 42)
+```
+
 ## Usage
 
 **Run Superset Locally**:
-
+Set docker lock permission on vm
+```bash
+$ chmod 666 /var/run/docker.sock
+```
 Start the Docker container by running the following command:
 ```bash
 $ docker compose up -d
