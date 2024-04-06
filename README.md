@@ -44,3 +44,14 @@ Kill all local containers
 ```bash
 $ docker rm -f $(docker ps -a -q)
 ```
+
+## Dashboard setup
+To Connect Clickhouse db in superset use following params:
+
+```
+Host: clickhouse
+Port: 8123
+Database: default
+Username: default
+Password: empty
+```
