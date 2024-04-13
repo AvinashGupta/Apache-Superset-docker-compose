@@ -1,5 +1,5 @@
 # Note: versions >3.1.0 don't allow drill down inside iframe
-FROM --platform=linux/amd64 apache/superset:3.1.0
+FROM --platform=linux/amd64 apache/superset:4.0.0
 
 USER root
 
