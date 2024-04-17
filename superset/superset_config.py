@@ -112,6 +112,14 @@ GUEST_TOKEN_JWT_AUDIENCE=os.getenv("GUEST_TOKEN_JWT_AUDIENCE")
 TALISMAN_ENABLED = False
 ENABLE_CORS = True
 HTTP_HEADERS={"X-Frame-Options":"ALLOWALL"}
+CORS_OPTIONS = {
+  'supports_credentials': True,
+  'allow_headers': ['*'],
+  'resources': {"/api/*": {"origins": "*"}},
+  'origins': ['*']
+}
+CORS_ORIGINS = ['*']
+WEB_SERVER_DOMAINS = ['*']
 #############################################################
 
 
