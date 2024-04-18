@@ -5,8 +5,16 @@ x-superset-depends-on: &superset-depends-on
   - clickhouse
 x-superset-volumes: &superset-volumes
   - superset_home:/app/superset_home
+x-superset-secrets: &superset-secrets
+  CYPRESS_CONFIG: "${CYPRESS_CONFIG}"
+  SUPERSET_SECRET_KEY: "${SUPERSET_SECRET_KEY}"
+  GUEST_TOKEN_JWT_SECRET: "${GUEST_TOKEN_JWT_SECRET}"
+  GUEST_TOKEN_JWT_AUDIENCE: "${GUEST_TOKEN_JWT_AUDIENCE}"
+  ADMIN_USERNAME: "${ADMIN_USERNAME}"
+  ADMIN_EMAIL: "${ADMIN_EMAIL}"
+  ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
 
-version: "3.7"
+version: "3.8"
 services:
   nginx:
     image: nginx:stable-alpine
@@ -39,7 +47,7 @@ services:
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-  
+
   clickhouse:
     image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
@@ -58,21 +66,25 @@ services:
         dockerfile: dockerfile
     container_name: superset_app
     restart: unless-stopped
-    expose:
-      - 8088
     ports:
       - 8088:8088
     user: *superset-user
     depends_on: *superset-depends-on
     volumes: *superset-volumes
-    environment:
-      CYPRESS_CONFIG: "${CYPRESS_CONFIG}"
-      SUPERSET_SECRET_KEY: "${SUPERSET_SECRET_KEY}"
-      GUEST_TOKEN_JWT_SECRET: "${GUEST_TOKEN_JWT_SECRET}"
-      GUEST_TOKEN_JWT_AUDIENCE: "${GUEST_TOKEN_JWT_AUDIENCE}"
-      ADMIN_USERNAME: "${ADMIN_USERNAME}"
-      ADMIN_EMAIL: "${ADMIN_EMAIL}"
-      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+    environment: *superset-secrets
+  
+  superset-init:
+    env_file: superset/.env-dev
+    build:
+        context: ./superset
+        dockerfile: dockerfile
+    container_name: superset_init
+    restart: unless-stopped
+    user: *superset-user
+    command: ["/superset-init.sh"]
+    depends_on: *superset-depends-on
+    volumes: *superset-volumes
+    environment: *superset-secrets
 
 volumes:
   superset_home:
